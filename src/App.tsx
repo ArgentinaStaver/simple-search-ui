@@ -1,13 +1,11 @@
+import { RouterProvider } from 'react-router-dom';
+import router from './routes';
 import './App.css'
 
-function App() {
+const App = () => {
 
   return (
-    <>
-      <p className="read-the-docs">
-        Search - ui
-      </p>
-    </>
+    <RouterProvider router={router} />
   )
 }
 
