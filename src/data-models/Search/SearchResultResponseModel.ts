@@ -1,12 +1,11 @@
-import { ContributorModel } from "../Contributor/ContributorModel";
 import { ResponseModel } from "../ResponseModel";
-import { SearchResultModel } from "./SearchResultModel";
+import { ItemModel, SearchResultModel } from "./SearchResultModel";
 
 export interface SearchResultResponseModel {
-  label: string;
-  accessibleAt: string;
-  category: string;
-  contributors: ContributorModel[];
+  page: number;
+  perpage: number;
+  pages: number;
+  items: ItemModel[];
 }
 
 export interface SearchResultResponse extends ResponseModel {

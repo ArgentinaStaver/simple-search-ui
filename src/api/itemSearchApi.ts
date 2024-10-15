@@ -5,9 +5,11 @@ const baseURL = import.meta.env.VITE_BASE_URL;
 
 export const getSearchResults = async (
   query = "",
-  category = "tool-or-service"
+  category = "tool-or-service",
+  page = 1,
+  perPage = 25
 ): Promise<SearchResultResponse> => {
-  const url = `${baseURL}/item-search?q=${query}&category=${category}&advanced=false&includeSteps=false`;
+  const url = `${baseURL}/item-search?q=${query}&categories=${category}&advanced=false&includeSteps=false&page=${page}&perpage=${perPage}`;
 
   const response = await fetch(url, {
     method: "GET",
@@ -20,8 +22,8 @@ export const getSearchResults = async (
     throw new Error("Failed to fetch data");
   }
 
-  const { items } = await response.json();
+  const data = await response.json();
   const status = await response.status;
 
-  return { data: items.map(mapSearchResultResponseToModel), status };
+  return { data: mapSearchResultResponseToModel(data), status };
 };

@@ -22,9 +22,13 @@ const Header = () => {
           >
             <StoreIcon />
           </IconButton>
-          <Stack direction={"row"} spacing={3}>
+          <Stack direction={"row"} spacing={3} sx={{
+            "& a": {
+              textDecoration: 'none',
+            }
+          }}>
             <Link to="resources">
-              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} color={"white"}>
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} color={"#ffff"}>
                 Resources
               </Typography>
             </Link>
