@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Button, MenuItem, Stack, TextField } from "@mui/material";
+import { Autocomplete, Button, MenuItem, Stack, TextField } from "@mui/material";
+import { SuggestionModel } from "../../data-models/Autocomplete/AutocompleteSuggestionModel";
+import { fetchAutocompleteSuggestions } from "../../api/autocompleteApi";
 
 interface ISearchForm {
   onSearch: (
@@ -14,8 +16,9 @@ const SearchForm = ({ onSearch }: ISearchForm) => {
   const incomingQ = new URLSearchParams(location.search).get('q') || "";
   const incomingCategory = new URLSearchParams(location.search).get('category') || "";
 
-  const [query, setQuery] = useState(incomingQ);
+  const [query, setQuery] = useState(incomingQ || "");
   const [category, setCategory] = useState(incomingCategory || 'tool-or-service');
+  const [autocompleteSuggestions, setAutocompleteSuggestions] = useState<SuggestionModel[]>([]);
 
   const handleInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
@@ -27,9 +30,25 @@ const SearchForm = ({ onSearch }: ISearchForm) => {
 
   const handleSearch = () => onSearch(query, category);
 
+  const handleAutocomplete = (query: string) => fetchAutocompleteSuggestions(query)
+    .then(({ data }) => {
+      if (data) {
+        setAutocompleteSuggestions(data.suggestions);
+        setQuery(data.phrase);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+
   useEffect(() => {
     if (incomingQ || incomingCategory) onSearch(query, category);
-  }, [incomingQ, incomingCategory])
+  }, [incomingQ, incomingCategory]);
+
+  useEffect(() => {
+    handleAutocomplete(query);
+  }, [query]);
 
   return (
     <Stack sx={{
@@ -41,18 +60,27 @@ const SearchForm = ({ onSearch }: ISearchForm) => {
         padding={5}
         justifyContent={"center"}>
         <Stack width={"35%"}>
-          <TextField
-            id="outlined-basic"
-            label="Search..."
-            variant="outlined"
+          <Autocomplete
+            id="free-solo"
+            freeSolo
+            onChange={(e, value) => setQuery(value || "")}
+            options={autocompleteSuggestions.map((option) => option.phrase)}
             value={query}
-            onChange={handleInputChange}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: 30,
-                height: 50,
-              },
-            }}
+            renderInput={(params) => <TextField
+              {...params}
+              id="outlined-basic"
+              label="Search..."
+              variant="outlined"
+              value={query}
+              onChange={handleInputChange}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 30,
+                  height: 50,
+                },
+              }}
+            />
+            }
           />
         </Stack>
         <Stack width={"35%"}>

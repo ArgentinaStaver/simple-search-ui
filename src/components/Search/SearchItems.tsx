@@ -1,11 +1,11 @@
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router";
+import { format } from "date-fns";
 import { Box, Button, Card, CardActions, CardContent, Link, Pagination, Stack, Typography } from "@mui/material";
 import { ArrowBackIosNewRounded, KeyboardArrowRightOutlined, OpenInNew } from "@mui/icons-material";
 import { SearchResultModel } from "../../data-models/Search/SearchResultModel";
 import { getSearchResults } from "../../api/itemSearchApi";
 import SearchForm from "./SearchForm";
-import { format } from "date-fns";
 
 const SearchItem = () => {
   const navigate = useNavigate();
@@ -62,7 +62,9 @@ const SearchItem = () => {
                       </Link>
                     </Stack>
                     <Typography textAlign="left" color="warning">{item.category}</Typography>
-                    <Typography textAlign="left" sx={{ color: "#25418D", fontSize: "14px" }}>Last info update: {format(item.lastInfoUpdate, "MM/dd/yyyy")}</Typography>
+                    <Typography textAlign="left" sx={{ color: "#25418D", fontSize: "14px" }}>
+                      Last info update: {format(item.lastInfoUpdate, "MM/dd/yyyy")}
+                    </Typography>
                     <Stack alignItems="flex-start">
                       {
                         item.contributors.map((contributor, index) => {
