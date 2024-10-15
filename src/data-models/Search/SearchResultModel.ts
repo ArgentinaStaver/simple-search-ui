@@ -6,6 +6,7 @@ export interface ItemModel {
   accessibleAt: string;
   category: string;
   contributors: ContributorModel[];
+  lastInfoUpdate: Date;
 }
 
 export interface SearchResultModel {

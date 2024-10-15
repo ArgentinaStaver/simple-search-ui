@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useNavigate } from "react-router";
-import { Box, Button, Card, CardContent, Link, Pagination, Stack, Typography } from "@mui/material";
+import { Box, Button, Card, CardActions, CardContent, Link, Pagination, Stack, Typography } from "@mui/material";
 import { ArrowBackIosNewRounded, KeyboardArrowRightOutlined, OpenInNew } from "@mui/icons-material";
 import { SearchResultModel } from "../../data-models/Search/SearchResultModel";
 import { getSearchResults } from "../../api/itemSearchApi";
 import SearchForm from "./SearchForm";
+import { format } from "date-fns";
 
 const SearchItem = () => {
   const navigate = useNavigate();
@@ -39,44 +40,52 @@ const SearchItem = () => {
       })
   };
 
+  const fetch = useCallback(handleSearch, [q, category]);
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
       <Box sx={{ width: '80%', margin: `0 auto` }}>
-        <Typography variant="h4" py={5}>Social Sciences & Humanities Open Marketplace</Typography>
-        <SearchForm onSearch={handleSearch} />
+        <Typography variant="h4" py={5} sx={{ color: '#164a78' }}>Social Sciences & Humanities Open Marketplace</Typography>
+        <SearchForm onSearch={fetch} />
       </Box>
       <Stack gap={2} width="60%">
         {searchResult &&
-          searchResult.items.map((item) => {
+          searchResult.items.map((item, index) => {
             return (
-              <Card elevation={3} sx={{ width: '100%' }}>
+              <Card elevation={3} sx={{ width: '100%' }} key={index}>
                 <CardContent>
                   <Stack direction='column' gap={1}>
                     <Stack flexDirection="row" alignItems="center">
-                      <Typography textAlign="left" flexGrow={1} variant="h6">{item.label}</Typography>
+                      <Typography textAlign="left" flexGrow={1} variant="h6" sx={{ color: '#25418D' }}>{item.label}</Typography>
                       <Link href={item.accessibleAt} target="_blank" underline="none" alignContent="center" display="flex">
                         Access the source <OpenInNew fontSize="small" />
                       </Link>
                     </Stack>
                     <Typography textAlign="left" color="warning">{item.category}</Typography>
-                    <Stack flexDirection="row" justifyContent="space-between">
+                    <Typography textAlign="left" sx={{ color: "#25418D", fontSize: "14px" }}>Last info update: {format(item.lastInfoUpdate, "MM/dd/yyyy")}</Typography>
+                    <Stack alignItems="flex-start">
                       {
-                        item.contributors.map((contributor) => {
+                        item.contributors.map((contributor, index) => {
                           return (
-                            <Typography>{contributor.role.label}: {contributor.actor.name}</Typography>
+                            <Typography key={index}>{contributor.role.label}: {contributor.actor.name}</Typography>
                           )
                         })
                       }
-                      <Button
-                        variant='contained'
-                        endIcon={<KeyboardArrowRightOutlined />}
-                        onClick={() => handleRedirectToItemDetails(item.persistentId)}
-                      >
-                        Details
-                      </Button>
                     </Stack>
                   </Stack>
                 </CardContent>
+                <CardActions sx={{ justifyContent: "end" }}>
+                  <Button
+                    variant='contained'
+                    endIcon={<KeyboardArrowRightOutlined />}
+                    onClick={() => handleRedirectToItemDetails(item.persistentId)}
+                    sx={{
+                      alignContent: 'end'
+                    }}
+                  >
+                    Details
+                  </Button>
+                </CardActions>
               </Card>
             )
           })

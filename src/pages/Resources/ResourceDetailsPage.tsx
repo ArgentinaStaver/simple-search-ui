@@ -23,7 +23,7 @@ const ResourceDetailsPage = () => {
 
   useEffect(() => {
     if (toolId) fetchToolById(toolId);
-  }, [toolId]);
+  }, []);
 
   const handleRedirectToItems = () => navigate('/resources');
 

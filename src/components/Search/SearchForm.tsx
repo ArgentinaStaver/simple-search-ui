@@ -1,6 +1,6 @@
-import { useState, useCallback } from "react";
-import { Button, MenuItem, Stack, TextField } from "@mui/material";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { Button, MenuItem, Stack, TextField } from "@mui/material";
 
 interface ISearchForm {
   onSearch: (
@@ -17,8 +17,6 @@ const SearchForm = ({ onSearch }: ISearchForm) => {
   const [query, setQuery] = useState(incomingQ);
   const [category, setCategory] = useState(incomingCategory || 'tool-or-service');
 
-  const fetch = useCallback(onSearch, [query, category]);
-
   const handleInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
   }
@@ -27,11 +25,11 @@ const SearchForm = ({ onSearch }: ISearchForm) => {
     setCategory(event.target.value);
   }
 
-  if (incomingQ || incomingCategory) {
-    fetch(query, category);
-  }
+  const handleSearch = () => onSearch(query, category);
 
-  const handleSearch = () => fetch(query, category);
+  useEffect(() => {
+    if (incomingQ || incomingCategory) onSearch(query, category);
+  }, [incomingQ, incomingCategory])
 
   return (
     <Stack sx={{
