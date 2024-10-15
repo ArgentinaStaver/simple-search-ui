@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { Box, Button, Card, CardContent, Link, Stack, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, Link, Pagination, Stack, Typography } from "@mui/material";
 import { ArrowBackIosNewRounded, KeyboardArrowRightOutlined, OpenInNew } from "@mui/icons-material";
 import { SearchResultModel } from "../../data-models/Search/SearchResultModel";
 import { getSearchResults } from "../../api/itemSearchApi";
@@ -9,11 +9,15 @@ import SearchForm from "./SearchForm";
 const SearchItem = () => {
   const navigate = useNavigate();
   const [searchResult, setSearchResult] = useState<SearchResultModel | null>(null);
+  const [q, setQ] = useState<string>('');
+  const [category, setCategory] = useState<string>('');
 
   const handleSearch = (query: string, cat: string) => getSearchResults(query, cat)
     .then(({ data }) => {
       if (Array.isArray(data?.items)) {
         setSearchResult(data);
+        setQ(query);
+        setCategory(cat);
       } else {
         console.error("Expected an array but got:", data);
       }
@@ -23,6 +27,17 @@ const SearchItem = () => {
   const handleRedirectToItemDetails = (persistentId: string) => navigate(`/resources/${persistentId}`);
 
   const goToHomePage = () => navigate('/');
+
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    getSearchResults(q, category, value)
+      .then(({ data }) => {
+        if (data) {
+          setSearchResult(data);
+        } else {
+          console.error("Error");
+        }
+      })
+  };
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
@@ -65,6 +80,12 @@ const SearchItem = () => {
               </Card>
             )
           })
+        }
+      </Stack>
+      <Stack>
+        {
+          searchResult &&
+          <Pagination count={searchResult.pages} page={searchResult.page} onChange={handlePageChange} variant="outlined" color="primary" />
         }
       </Stack>
       <Button
