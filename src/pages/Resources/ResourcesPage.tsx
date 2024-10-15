@@ -1,8 +1,9 @@
-import { Box } from "@mui/material"
+import SearchItem from "../../components/Search/SearchItems";
 
 const ResourcesPage = () => {
+
   return (
-    <Box>Resources page</Box>
+    <SearchItem />
   )
 }
 
