@@ -6,9 +6,11 @@ import { ArrowBackIosNewRounded, KeyboardArrowRightOutlined, OpenInNew } from "@
 import { SearchResultModel } from "../../data-models/Search/SearchResultModel";
 import { getSearchResults } from "../../api/itemSearchApi";
 import SearchForm from "./SearchForm";
+import useMobileView from "../../utils/useMediaQuery";
 
 const SearchItem = () => {
   const navigate = useNavigate();
+  const isMobile = useMobileView();
   const [searchResult, setSearchResult] = useState<SearchResultModel | null>(null);
   const [q, setQ] = useState<string>('');
   const [category, setCategory] = useState<string>('');
@@ -53,7 +55,7 @@ const SearchItem = () => {
         <Typography variant="h4" py={5} sx={{ color: '#164a78' }}>Tools and Services Resources</Typography>
         <SearchForm onSearch={fetch} />
       </Box>
-      <Stack gap={2} width="60%">
+      <Stack gap={2} width={isMobile ? "85%" : "60%"}>
         {searchResult &&
           searchResult.items.map((item, index) => {
             return (

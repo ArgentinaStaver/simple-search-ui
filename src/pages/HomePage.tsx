@@ -12,7 +12,7 @@ const HomePage = () => {
   return (
     <Box sx={{ width: '80%', margin: '0 auto' }}>
       <Stack py={5}>
-        <Typography variant="h4" textAlign="center">Explore our Social Sciences & Humanities Open Marketplace</Typography>
+        <Typography variant="h4" textAlign="center" sx={{ color: '#164a78' }}>Explore our Social Sciences & Humanities Open Marketplace</Typography>
       </Stack>
       <SearchForm onSearch={handleSearch} />
     </Box>

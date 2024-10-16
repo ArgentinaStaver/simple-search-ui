@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { Autocomplete, Button, MenuItem, Stack, TextField } from "@mui/material";
 import { SuggestionModel } from "../../data-models/Autocomplete/AutocompleteSuggestionModel";
 import { fetchAutocompleteSuggestions } from "../../api/autocompleteApi";
+import { useMobileView } from "../../utils/useMediaQuery";
 
 interface ISearchForm {
   onSearch: (
@@ -13,6 +14,7 @@ interface ISearchForm {
 
 const SearchForm = ({ onSearch }: ISearchForm) => {
   const location = useLocation();
+  const isMobile = useMobileView();
   const incomingQ = new URLSearchParams(location.search).get('q') || "";
   const incomingCategory = new URLSearchParams(location.search).get('category') || "";
 
@@ -53,15 +55,9 @@ const SearchForm = ({ onSearch }: ISearchForm) => {
   }, [query]);
 
   return (
-    <Stack sx={{
-      backgroundColor: '#fff',
-      borderRadius: '16px',
-    }}>
-      <Stack direction="row" gap={3}
-        alignItems={"center"}
-        padding={5}
-        justifyContent={"center"}>
-        <Stack width={"35%"}>
+    <Stack sx={{ backgroundColor: '#fff', borderRadius: '16px' }}>
+      <Stack direction={isMobile ? "column" : "row"} gap={3} alignItems="center" padding={5} justifyContent="center">
+        <Stack width={isMobile ? "85%" : "35%"}>
           <Autocomplete
             id="free-solo"
             freeSolo
@@ -85,7 +81,7 @@ const SearchForm = ({ onSearch }: ISearchForm) => {
             }
           />
         </Stack>
-        <Stack width={"35%"}>
+        <Stack width={isMobile ? "85%" : "35%"}>
           <TextField
             id="outlined-select-categories"
             select
@@ -106,14 +102,13 @@ const SearchForm = ({ onSearch }: ISearchForm) => {
             ))}
           </TextField>
         </Stack>
-        <Stack>
+        <Stack width={isMobile ? "85%" : "20%"}>
           <Button
             variant="contained"
             onClick={handleSearch}
+            fullWidth
             sx={{
               borderRadius: '999px',
-              maxWidth: '160px',
-              minWidth: '160px',
               height: 50,
             }}
           >
