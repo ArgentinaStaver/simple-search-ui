@@ -8,19 +8,25 @@ export const getToolById = async (
 ): Promise<ToolOrServiceResponse> => {
   const url = `${baseURL}/tools-services/${persistentId}?draft=false&approved=true&redirect=false`;
 
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-    },
-  });
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+      },
+    });
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch data");
+    if (!response.ok) {
+      return { status: response.status };
+    }
+
+    const data = await response.json();
+
+    return {
+      data: mapToolOrServiceResponseToModel(data),
+      status: response.status,
+    };
+  } catch (error) {
+    return { status: 404 };
   }
-
-  const data = await response.json();
-  const status = await response.status;
-
-  return { data: mapToolOrServiceResponseToModel(data), status };
 };

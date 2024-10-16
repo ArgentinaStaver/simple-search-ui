@@ -11,19 +11,24 @@ export const getSearchResults = async (
 ): Promise<SearchResultResponse> => {
   const url = `${baseURL}/item-search?q=${query}&categories=${category}&advanced=false&includeSteps=false&page=${page}&perpage=${perPage}`;
 
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-    },
-  });
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+      },
+    });
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch data");
+    if (!response.ok) {
+      return { status: response.status };
+    }
+
+    const data = await response.json();
+    return {
+      data: mapSearchResultResponseToModel(data),
+      status: response.status,
+    };
+  } catch (error) {
+    return { status: 404 };
   }
-
-  const data = await response.json();
-  const status = await response.status;
-
-  return { data: mapSearchResultResponseToModel(data), status };
 };

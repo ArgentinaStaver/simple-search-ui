@@ -8,19 +8,25 @@ export const fetchAutocompleteSuggestions = async (
 ): Promise<AutocompleteResponse> => {
   const url = `${baseURL}/item-search/autocomplete?q=${query}`;
 
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-    },
-  });
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+      },
+    });
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch data");
+    if (!response.ok) {
+      return { status: response.status };
+    }
+
+    const data = await response.json();
+
+    return {
+      data: mapAutocompleteResponseToModel(data),
+      status: response.status,
+    };
+  } catch (error) {
+    return { status: 404 };
   }
-
-  const data = await response.json();
-  const status = await response.status;
-
-  return { data: mapAutocompleteResponseToModel(data), status };
 };

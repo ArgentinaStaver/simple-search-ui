@@ -30,24 +30,26 @@ const SearchForm = ({ onSearch }: ISearchForm) => {
 
   const handleSearch = () => onSearch(query, category);
 
-  const handleAutocomplete = (query: string) => fetchAutocompleteSuggestions(query)
-    .then(({ data }) => {
+  const handleAutocomplete = async (query: string) => {
+    try {
+      const { data } = await fetchAutocompleteSuggestions(query);
       if (data) {
         setAutocompleteSuggestions(data.suggestions);
         setQuery(data.phrase);
       }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-
+    } catch (error) {
+      alert("Failed to load autocomplete suggestions. Please try again.");
+    }
+  };
 
   useEffect(() => {
     if (incomingQ || incomingCategory) onSearch(query, category);
   }, [incomingQ, incomingCategory]);
 
   useEffect(() => {
-    handleAutocomplete(query);
+    if (query) {
+      handleAutocomplete(query);
+    }
   }, [query]);
 
   return (

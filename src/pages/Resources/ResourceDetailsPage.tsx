@@ -11,23 +11,22 @@ const ResourceDetailsPage = () => {
 
   const [itemDetails, setItemDetails] = useState<ToolServiceModel | null>(null);
 
-  const fetchToolById = (persistentId: string) => getToolById(persistentId)
-    .then(({ data }) => {
+  const fetchToolById = async (persistentId: string) => {
+    try {
+      const { data } = await getToolById(persistentId);
       if (data) {
         setItemDetails(data);
-      } else {
-        console.error("Error");
       }
-    })
-    .catch(() => alert("Error fetching items"));
+    } catch (error) {
+      alert("Error fetching items");
+    }
+  };
 
   useEffect(() => {
     if (toolId) fetchToolById(toolId);
   }, []);
 
   const handleRedirectToItems = () => navigate('/resources');
-
-  if (!itemDetails) { }
 
   return (
     <Box py={3} width='60%' sx={{ margin: `0 auto` }}>
@@ -64,7 +63,6 @@ const ResourceDetailsPage = () => {
         Back to items
       </Button>
     </Box>
-
   )
 }
 

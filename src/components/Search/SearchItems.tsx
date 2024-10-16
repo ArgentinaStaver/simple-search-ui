@@ -12,18 +12,23 @@ const SearchItem = () => {
   const [searchResult, setSearchResult] = useState<SearchResultModel | null>(null);
   const [q, setQ] = useState<string>('');
   const [category, setCategory] = useState<string>('');
+  const [error, setError] = useState<boolean>(false);
 
-  const handleSearch = (query: string, cat: string) => getSearchResults(query, cat)
-    .then(({ data }) => {
+  const handleSearch = async (query: string, cat: string) => {
+    try {
+      const { data } = await getSearchResults(query, cat);
       if (Array.isArray(data?.items)) {
         setSearchResult(data);
         setQ(query);
         setCategory(cat);
+        setError(false);
       } else {
-        console.error("Expected an array but got:", data);
+        setError(true);
       }
-    })
-    .catch((error) => console.log(error));
+    } catch (error) {
+      setError(true);
+    }
+  };
 
   const handleRedirectToItemDetails = (persistentId: string) => navigate(`/resources/${persistentId}`);
 
@@ -45,7 +50,7 @@ const SearchItem = () => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
       <Box sx={{ width: '80%', margin: `0 auto` }}>
-        <Typography variant="h4" py={5} sx={{ color: '#164a78' }}>Social Sciences & Humanities Open Marketplace</Typography>
+        <Typography variant="h4" py={5} sx={{ color: '#164a78' }}>Tools and Services Resources</Typography>
         <SearchForm onSearch={fetch} />
       </Box>
       <Stack gap={2} width="60%">
@@ -91,6 +96,9 @@ const SearchItem = () => {
               </Card>
             )
           })
+        }
+        {
+          (error || searchResult?.items.length === 0) && <Typography>{"No items found for your search query"}</Typography>
         }
       </Stack>
       <Stack>
